@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  loki:
+    image: grafana/loki:2.8.0  # Second last latest version of Loki
+    container_name: loki
+    ports:
+      - "3100:3100"  # Loki API and UI access
+    volumes:
+      - ./loki-config.yaml:/etc/loki/local-config.yaml
+    networks:
+      - loki-network
+
+  promtail:
+    image: grafana/promtail:2.8.0  # Second last latest version of Promtail
+    container_name: promtail
+    ports:
+      - "9080:9080"  # Promtail web interface (optional)
+    volumes:
+      - ./promtail-config.yaml:/etc/promtail/promtail.yaml
+      - /var/log:/var/log  # Path to logs on your host
+    networks:
+      - loki-network
+
+  grafana:
+    image: grafana/grafana:latest  # Second last latest version of Grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"  # Grafana UI access
+    volumes:
+      - grafana-data:/var/lib/grafana  # Persistent storage for Grafana data
+    networks:
+      - loki-network
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin  # Default admin password
+
+networks:
+  loki-network:
+    driver: bridge
+
+volumes:
+  grafana-data:
+
