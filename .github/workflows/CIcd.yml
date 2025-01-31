@@ -20,20 +20,13 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-      - name: Install Docker and Docker Compose on EC2
+      - name: Run Docker Compose on EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-            # Install Docker if not installed
-            sudo yum install -y docker || sudo apt-get install -y docker.io
-            sudo systemctl start docker
-            sudo systemctl enable docker
-
-            # Install Docker Compose if not installed
-            sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            sudo chmod +x /usr/local/bin/docker-compose
+          ssh -v -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+            # Navigate to project directory
+            cd /home/ec2-user/my_project  # Update this path to your project folder on EC2
 
             # Run Docker Compose to start services
-            cd /home/ec2-user/my_project  # Update this path to your project folder on EC2
             docker-compose up -d  # Start the services in the background
 
             # Verify the services are running
