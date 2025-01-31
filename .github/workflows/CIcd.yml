@@ -22,9 +22,9 @@ jobs:
 
       - name: Run Docker Compose on EC2
         run: |
-          ssh -v -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+          ssh -v -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
             # Navigate to project directory
-            cd /home/ec2-user/my_project  # Update this path to your project folder on EC2
+            cd /home/ubuntu/assignment # Update this path to your project folder on EC2
 
             # Run Docker Compose to start services
             docker-compose up -d  # Start the services in the background
