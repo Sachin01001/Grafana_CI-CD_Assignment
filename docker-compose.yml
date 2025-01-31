@@ -2,37 +2,35 @@ version: '3'
 
 services:
   loki:
-    image: grafana/loki:2.8.0
+    image: grafana/loki:2.8.0  
     container_name: loki
     ports:
       - "3100:3100"
     volumes:
-      - $BITBUCKET_CLONE_DIR/loki-config.yaml:/etc/loki/local-config.yaml
+      - ./loki-config.yaml:/etc/loki/local-config.yaml
     networks:
       - loki-network
 
   promtail:
-    image: grafana/promtail:2.8.0
+    image: grafana/promtail:2.8.0  
     container_name: promtail
     ports:
-      - "9080:9080"
+      - "9080:9080"  
     volumes:
-      - $BITBUCKET_CLONE_DIR/promtail-config.yaml:/etc/promtail/promtail.yaml
-      - /var/log:/var/log
+      - ./promtail-config.yaml:/etc/promtail/promtail.yaml
+      - /var/log:/var/log  
     networks:
       - loki-network
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:latest  
     container_name: grafana
     ports:
-      - "3000:3000"
+      - "3000:3000"  
     volumes:
-      - grafana-data:/var/lib/grafana
+      - grafana-data:/var/lib/grafana  
     networks:
       - loki-network
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
 
 networks:
   loki-network:
