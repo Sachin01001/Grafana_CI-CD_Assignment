@@ -20,6 +20,31 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
+      - name: Install Docker and Docker Compose on EC2
+        run: |
+          ssh -v -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+            # Update package list
+            sudo apt-get update
+
+            # Install Docker
+            sudo apt-get install -y docker.io
+
+            # Enable Docker to start on boot
+            sudo systemctl enable docker
+
+            # Start Docker service
+            sudo systemctl start docker
+
+            # Install Docker Compose
+            sudo apt-get install -y curl
+            curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+
+            # Verify Docker and Docker Compose installation
+            docker --version
+            docker-compose --version
+          EOF
+
       - name: Run Docker Compose on EC2
         run: |
           ssh -v -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
