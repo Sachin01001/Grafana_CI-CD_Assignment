@@ -19,7 +19,7 @@ jobs:
 
       - name: Start Docker Compose stack
         run: |
-          docker-compose up -d
+          docker compose up -d
 
       - name: Verify services are running
         run: |
