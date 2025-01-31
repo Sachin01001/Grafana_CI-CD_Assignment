@@ -1,4 +1,4 @@
-name: Deploy Docker Compose Stack on EC2
+name: Docker Compose Actions Workflow
 
 on:
   push:
@@ -12,18 +12,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout repository code
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up SSH key for EC2 access
-      - name: Set up SSH Key
+      - name: Set up SSH key for EC2 access
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-      # Step 3: SSH into EC2, install Docker and Docker Compose (if needed), and start the Docker Compose stack
-      - name: Set up Docker and Docker Compose on EC2
+      - name: Install Docker and Docker Compose on EC2
         run: |
           ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
             # Install Docker if not installed
@@ -41,11 +38,4 @@ jobs:
 
             # Verify the services are running
             docker ps  # List the running containers
-          EOF
-
-      # Step 4: Verify services are running (Optional check after deployment)
-      - name: Verify services running on EC2
-        run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-            docker ps  # This will show the running services (Grafana, Loki, Prometheus)
           EOF
