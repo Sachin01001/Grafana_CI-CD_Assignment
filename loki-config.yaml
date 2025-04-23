@@ -1,37 +1,40 @@
-auth_enabled: false
+auth_enabled: false                    
 
 server:
-  http_listen_port: 3100
-  grpc_listen_port: 9096
+  http_listen_port: 3100              # Loki listens on this port for HTTP requests (used by Grafana, Promtail)
+  grpc_listen_port: 9096              # Loki uses this port internally for gRPC communication between components
 
 common:
-  instance_addr: 127.0.0.1
-  path_prefix: /tmp/loki
+  instance_addr: 127.0.0.1            # Localhost binding for internal access only
+  path_prefix: /tmp/loki              # Directory to store Loki data (chunks, indexes, etc.)
+
   storage:
     filesystem:
-      chunks_directory: /tmp/loki/chunks
-      rules_directory: /tmp/loki/rules
-  replication_factor: 1
+      chunks_directory: /tmp/loki/chunks     # Directory to store compressed log chunks
+      rules_directory: /tmp/loki/rules       
+
+  replication_factor: 1              
+
   ring:
     kvstore:
-      store: inmemory
+      store: inmemory                # Use in-memory key-value stor
 
 query_range:
   results_cache:
     cache:
       embedded_cache:
-        enabled: true
-        max_size_mb: 100
+        enabled: true                # Enable query results caching
+        max_size_mb: 100             # Limit cache size to 100 MB
 
 schema_config:
   configs:
-    - from: 2020-10-24
-      store: boltdb-shipper
-      object_store: filesystem
-      schema: v11
+    - from: 2020-10-24               # Apply this schema starting from this date
+      store: boltdb-shipper          # Index storage engine
+      object_store: filesystem       # Store chunks on local file system
+      schema: v11                    # Loki schema version
       index:
-        prefix: index_
-        period: 24h
+        prefix: index_               # Prefix for index files
+        period: 24h                  # Create a new index every 24 hours
 
 ruler:
-  alertmanager_url: http://localhost:9093
+  alertmanager_url: http://localhost:9093    # URL of Alertmanager to send alerts to (for rule evaluation)
