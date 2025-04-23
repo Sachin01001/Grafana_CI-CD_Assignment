@@ -28,10 +28,10 @@ query_range:
 
 schema_config:
   configs:
-    - from: 2020-10-24               # Apply this schema starting from this date
-      store: boltdb-shipper          # Index storage engine
+    - from: 2020-10-24              
+      store: boltdb-shipper          # Loki stores index data on disk
       object_store: filesystem       # Store chunks on local file system
-      schema: v11                    # Loki schema version
+      schema: v11                    # internal version Loki uses for organizing data
       index:
         prefix: index_               # Prefix for index files
         period: 24h                  # Create a new index every 24 hours
